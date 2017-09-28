@@ -1,0 +1,141 @@
+---
+layout: default
+title: Ruby
+---
+
+<div class="main-content gradientbg">
+	<div class="container equalize-heights-container">
+		<div class="row">
+			<!-- page.php -->
+		    
+	<!-- </div> --><!-- close .main-content-inner -->
+
+	{% include sidebar.html %} 
+			<div id="content" class="main-content-inner col-xs-12 col-sm-9 main-column shadow-left documentation equalize-heights-column">
+		
+		<!-- content-page.php -->
+
+<article id="post-293" class="post-293 page type-page status-publish hentry">
+	<header class="page-header">
+		<h1 class="page-title">Ruby</h1>
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<h1>What you need</h1>
+<h2>1. Ruby</h2>
+<p>Obtain and install Ruby. <a href="https://www.ruby-lang.org/en/downloads/" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://www.ruby-lang.org/en/downloads/', 'Download Ruby']);" title="Download Ruby">Download Ruby</a>.</p>
+<h2>2. The Ruby Lemma</h2>
+<p><a href="/files/noam-lemma-ruby_v0.1.zip" title="Noam Ruby Lemma">Download</a> the Lemma gem and examples.</p>
+<h2>3. Build the Lemma</h2>
+<p>In a terminal within the ruby lemma directory:</p>
+<p>Build the lemma gem.</p>
+<pre><code>
+gem build noam_lemma.gemspec
+</code></pre>
+<p>Install the gem</p>
+<pre><code>
+gem install noam_lemma-version.gem
+</code></pre>
+<h2>4. Review the example scripts</h2>
+<p>Located in <code>/examples/</code> folder.</p>
+<h1>Using the Ruby Lemma</h1>
+<h2>Dependencies</h2>
+<p>Any ruby guest must include</p>
+<pre><code>require 'noam_lemma'
+</code></pre>
+<h2>Initialize a Lemma</h2>
+<p><code>guestName</code> is the ID Noam Hosts will associate with your application. If <code>roomName</code> is left blank, the lemma is a Free Guest and may be grabbed by any Host via the <a href="/docs/host-interface" title="Host Interface">Host Interface</a>. Otherwise, it will only join a host with the specified <code>roomName</code>.</p>
+<pre><code>lemma = Noam::Lemma.new(
+  &lt;guestName&gt;,
+  'ruby-script',
+  9000,
+  &lt;hearTopicList[]&gt;,
+  &lt;speakTopicName[]&gt;)
+
+lemma.advertise("roomName")
+</code></pre>
+<p>Note: registering for spoken Topics is optional &#8211; topics can be added dynamically in-application by simply speaking them to the Host.</p>
+<h2>Hear Messages</h2>
+<p>Inside your <code>do</code> loop, hear messages.</p>
+<pre><code>loop do
+  message = lemma.listen //hear messages and return event object
+end
+</code></pre>
+<p>Access parameters of the event object</p>
+<pre><code># Return the Topic Name
+message.ident 
+
+# Return the Message Value
+message.value
+</code></pre>
+<h3>Example</h3>
+<p>This example creates a guest named <code>Ruby Guest</code> set to join <code>Test Room</code>. Registers to listen for messages on topic <code>exampleTopic</code> and prints received messages.</p>
+<pre><code>require 'noam_lemma'
+
+lemma = Noam::Lemma.new(
+  'Ruby Guest',
+  'ruby-script',
+  9000,
+  ["exampleTopic"],
+  [])
+
+lemma.advertise("Test Room")
+
+loop do
+  # The `listen` method will return an Event object once one is received by the
+  # Lemma. Until an event is heard, the `listen` method blocks.
+  message = lemma.listen
+
+  # prints the topic name and message value
+  puts "Read: #{m.ident} -&gt; #{m.value.inspect}" 
+end
+</code></pre>
+<h2>Speak Messages</h2>
+<p>Inside the <code>do</code> loop, speak messages.</p>
+<pre><code>lemma.play( &lt;topicName&gt;, &lt;messageValue&gt; )
+</code></pre>
+<h3>Example</h3>
+<p>This example creates a guest named <code>Ruby Guest</code> set to join <code>Test Room</code>. Registers to peridically send messages to topic <code>exampleTopic</code>.</p>
+<pre><code>require 'noam_lemma'
+
+lemma = Noam::Lemma.new(
+  'Ruby Guest',
+  'ruby-script',
+  9000,
+  [],
+  ["exampleTopic"])
+
+publisher.advertise("Test Room")
+
+seq = 0
+loop do
+  # Construct a value to send with the event.
+  v = {"seq" =&gt; seq, "time" =&gt; Time.now.to_s}
+
+  # If `play` returns false, we're unable to play the message likely because
+  # the socket has closed. The connection would have to be restarted.
+  unless publisher.play("exampleTopic", v)
+    puts "Done"
+    break
+  end
+  puts "Wrote: #{e} -&gt; #{v.inspect}"
+
+  seq += 1
+  # Sleep for a while so that we don't bog down the network.
+  sleep(1)
+end
+</code></pre>
+<h1>Limitations</h1>
+<p>• Listening fails un-gracefully when the Noam host goes down.</p>
+<h1>Developers</h1>
+<p>If you&#8217;re interested in checking out the source or contributing to this Lemma, visit our <a href="https://github.com/noam-io/lemma-ruby" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://github.com/noam-io/lemma-ruby', 'GitHub repository']);" title="Ruby Lemma github repo">GitHub repository</a>.</p>
+			</div><!-- .entry-content -->
+	</article><!-- #post-## -->
+
+		
+	
+
+			</div> <!-- close .*-inner (main-content or sidebar, depending if sidebar is used) -->
+		</div> <!-- close .row -->
+	</div> <!-- close .container -->
+</div> 

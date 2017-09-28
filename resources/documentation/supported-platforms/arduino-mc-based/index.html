@@ -1,0 +1,152 @@
+---
+layout: default
+title: ARDUINO ΜC-BASED
+---
+
+<div class="main-content gradientbg">
+	<div class="container equalize-heights-container">
+		<div class="row">
+			<!-- page.php -->
+		    
+	<!-- </div> --><!-- close .main-content-inner -->
+
+	{% include sidebar.html %} 
+			<div id="content" class="main-content-inner col-xs-12 col-sm-9 main-column shadow-left documentation equalize-heights-column">
+		
+		<!-- content-page.php -->
+
+<article id="post-289" class="post-289 page type-page status-publish hentry">
+	<header class="page-header">
+		<h1 class="page-title">Arduino µC-based</h1>
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<h1>What you need</h1>
+<h2>1. An Arduino with Ethernet</h2>
+<p>Using an arduino with Noam requires an Ethernet connection. That means using an <a href="http://arduino.cc/en/Main/ArduinoEthernetShield" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'http://arduino.cc/en/Main/ArduinoEthernetShield', 'Arduino Ethernet']);" title="Arduino Ethernet Shields">Arduino Ethernet</a> or an <a href="http://arduino.cc/en/Main/ArduinoBoardEthernet" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'http://arduino.cc/en/Main/ArduinoBoardEthernet', 'Ethernet Shield']);" title="Arduino Ethernet">Ethernet Shield</a>.</p>
+<h2>2. The Arduino Lemma</h2>
+<p>Download the <a title="Arduino Platform Lemma" href="/resources/downloads/">Arduino µC Lemma</a>.</p>
+<h2>3. Libraries added to the Arduino IDE</h2>
+<p>Noam currently only works with Arduino IDE 1.0.5 You can download it from the official<a href="http://arduino.cc/en/Main/OldSoftwareReleases" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'http://arduino.cc/en/Main/OldSoftwareReleases', ' Arduino site']);" > Arduino site</a> or direct links here: <a href="https://code.google.com/p/arduino/downloads/detail?name=arduino-1.0.5-macosx.zip&amp;can=2&amp;q=" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://code.google.com/p/arduino/downloads/detail?name=arduino-1.0.5-macosx.zip&amp;can=2&amp;q=', 'Mac OS X']);" >Mac OS X</a>, <a href="https://code.google.com/p/arduino/downloads/detail?name=arduino-1.0.5-windows.zip&amp;can=2&amp;q=" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://code.google.com/p/arduino/downloads/detail?name=arduino-1.0.5-windows.zip&amp;can=2&amp;q=', 'Windows']);" >Windows</a>, <a href="https://code.google.com/p/arduino/downloads/detail?name=arduino-1.0.5-linux32.tgz&amp;can=2&amp;q=" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://code.google.com/p/arduino/downloads/detail?name=arduino-1.0.5-linux32.tgz&amp;can=2&amp;q=', 'Linux 32 bit']);" >Linux 32 bit</a>,  <a href="https://code.google.com/p/arduino/downloads/detail?name=arduino-1.0.5-linux64.tgz&amp;can=2&amp;q=" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://code.google.com/p/arduino/downloads/detail?name=arduino-1.0.5-linux64.tgz&amp;can=2&amp;q=', 'Linux 64 bit']);" >Linux 64 bit</a></p>
+<p>Copy the <code>aJson</code> and <code>LemmaLib</code> directories into your Arduino libraries folder. On OS X, this is typically located inside <code>~/Documents/Arduino/libraries/</code>. Restart the Arduino IDE.</p>
+<h2>4. Review the Lemma Example</h2>
+<p>You can find a simple lemma example in the Arduino IDE under <code>File -&gt; Examples -&gt; LemmaLib -&gt; Examples</code>.</p>
+<h1>Using the Arduino Lemma</h1>
+<h2>Dependencies</h2>
+<p>SPI.h, EthernetServer.h, aJSON.h, and Lemma.h are required includes for your Arduino application. SPI and EthernetServer come as part of recent Arduino version contents, so do not need to be downloaded separately.</p>
+<pre><code>#include &lt;Arduino.h&gt;
+#include "SPI.h"    
+#include "EthernetServer.h"   
+#include "aJSON.h"  
+#include "Lemma.h" 
+</code></pre>
+<h2>Instantiate a Lemma</h2>
+<p>Instantiate a lemma in your sketch before your setup function. <code>guestName</code> is the ID Noam Hosts will associate with your application. If <code>roomName</code> is left blank, the lemma is a Free Guest and may be grabbed by any Host via the <a title="Host Interface" href="/docs/host-interface">Host Interface</a>. Otherwise, it will only join a host with the specified <code>roomName</code>.</p>
+<pre><code>Lemma lemma( &lt;guestName&gt; , &lt;roomName&gt; );
+</code></pre>
+<h2>Hear Messages</h2>
+<p>Inside your setup function, register for desired Topics by calling the <code>lemma.hear</code> function. When a an incoming Message on the specified Topic is received, the supplied callback will be called with the Message contents passed as an argument.</p>
+<pre><code>void setup() {
+    lemma.hear( &lt;topicName&gt; , &lt;messageCallback&gt; );
+}
+</code></pre>
+<h2>Begin the Lemma</h2>
+<p>Initialize the lemma inside your setup function.</p>
+<pre><code>void setup() {
+    lemma.begin( MAC );
+    }
+</code></pre>
+<p>MAC = the unique network MAC address for the device. Arduino Ethernet devices come with stickers that have a guaranteed unique MAC address.</p>
+<h2>Run the Lemma</h2>
+<p>Run the lemma inside your main loop:</p>
+<pre><code>void loop() {
+    lemma.run();
+}
+</code></pre>
+<p>All incoming messages are checked in the Lemma::run() method, so you should avoid delays in your loop to maximize response time for applications listening for messages.</p>
+<p>Outside of your main loop, create a callback for your lemma.hear function calls. Each Topic can be associated with its own callback.</p>
+<pre><code>void messageHandler(Message const &amp; message)
+{
+  //a message has values message.intValue, message.floatValue, message.boolValue, and message.stringValue, which are parsed from the message&amp;#039;s JSON list.  You can also access message.topicName.
+}
+</code></pre>
+<h2>Speak Messages</h2>
+<p>To speak a Noam message, from your application:</p>
+<pre><code>lemma.speak(&lt;topicName&gt; , &lt;messageValue&gt; );
+</code></pre>
+<p>int, float, bool, and string are the supported data types on Arduino. You can also pass no messageValue and speak a null message to speak simple event signals.</p>
+<h2>Examples</h2>
+<h3>Hearing messages</h3>
+<p>Joins an Arduino named &#8220;Arduino Guest&#8221; to the room &#8220;Test Room&#8221;. Register to hear messages on topic &#8220;FirstName&#8221; and prints the value to Serial.</p>
+<pre><code>#include &lt;Arduino.h&gt;
+#include "SPI.h"   
+#include "EthernetServer.h"  
+#include "aJSON.h"  
+#include "Lemma.h"  
+
+void messageHandler(); //function prototype for callback
+
+static byte MAC[] = { 0xA0, 0xA2, 0xDA, 0x01, 0x7E, 0x59 };  // Network MAC address must be unique on network
+
+Lemma lemma( "Arduino Guest" , "Test Room" );
+
+void setup() {
+  Serial.begin(9600);
+  lemma.hear( "FirstName", messageHandler );  // Register for Topic &amp;#039;FirstName&amp;#039;, call messageHandler() on new message.
+  lemma.begin( MAC );  // example MAC address.
+}
+
+void loop() {
+  lemma.run();      // check for new Noam messages
+}
+
+//
+void messageHandler(Message const &amp; message)
+{
+  Serial.print("Message Received: "); Serial.println( message.stringValue );
+}
+</code></pre>
+<h3>Speaking messages</h3>
+<p>Joins an Arduino named &#8220;Arduino Guest&#8221; to the room &#8220;Test Room&#8221;. Speaks the message string &#8220;Hello World&#8221; every 1000mSec on topic &#8220;ArduinoSpeaks&#8221;.</p>
+<pre><code>#include &lt;Arduino.h&gt;
+#include "SPI.h"   
+#include "EthernetServer.h"  
+#include "aJSON.h"  
+#include "Lemma.h"  
+
+static byte MAC[] = { 0xA0, 0xA2, 0xDA, 0x01, 0x7E, 0x59 };  // Network MAC address must be unique on network
+
+Lemma lemma( "Arduino Guest" , "Test Room" );
+
+void setup() {
+  lemma.begin( MAC );  // unique MAC address.
+}
+
+void loop() {
+  lemma.run();      // check for new Noam messages
+  lemma.speak("ArduinoSpeaks", "Hello World");
+  delay(1000);
+}
+</code></pre>
+<h1>Limitations</h1>
+<h2>Message Rate</h2>
+<p>Arduinos receiving messages at continuous rates higher than every 200ms may exhibit unstable behavior.</p>
+<h2>Data Types</h2>
+<p>Incoming and outgoing message data types supported are: int, float, bool, and string. An update is coming soon to support all primitive types, as well as arrays and potentially key-value maps.</p>
+<h2>WiFi Shields</h2>
+<p>WiFi shields are not currently supported, but a port is in the backlog.</p>
+<h2>Memory</h2>
+<p>The Lemma uses a large portion of a stanard Arduino&#8217;s codespace, so only minimal applications can be implemented on 32k Arduinos.</p>
+<p>RAM allocation is configured in the Lemma to a maximum of 128 Bytes for topic names and 128 Bytes for message values.</p>
+<h1>Developers</h1>
+<p>If you&#8217;re interested in checking out the source or contributing to this Lemma, visit our <a href="https://github.com/noam-io/lemma-arduino" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://github.com/noam-io/lemma-arduino', 'GitHub repository']);" title="Arduino github repo">GitHub repository</a>.</p>
+			</div><!-- .entry-content -->
+</article><!-- #post-## -->
+
+		
+	
+
+			</div> <!-- close .*-inner (main-content or sidebar, depending if sidebar is used) -->
+		</div> <!-- close .row -->
+	</div> <!-- close .container -->
+</div> 

@@ -1,0 +1,108 @@
+---
+layout: default
+title: OS X + iOS
+---
+
+<div class="main-content gradientbg">
+	<div class="container equalize-heights-container">
+		<div class="row">
+			<!-- page.php -->
+		    
+	<!-- </div> --><!-- close .main-content-inner -->
+
+	{% include sidebar.html %} 
+			<div id="content" class="main-content-inner col-xs-12 col-sm-9 main-column shadow-left documentation equalize-heights-column">
+		
+		<!-- content-page.php -->
+
+<article id="post-286" class="post-286 page type-page status-publish hentry">
+	<header class="page-header">
+		<h1 class="page-title">OS X + iOS</h1>
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<h1>What you need</h1>
+<h2>1. Xcode</h2>
+<p>Xcode is the IDE for OS X and iOS applications. <a href="https://developer.apple.com/xcode/downloads/" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://developer.apple.com/xcode/downloads/', 'Download Xcode']);" title="Xcode Download">Download Xcode</a>.</p>
+<h2>2. Objective-C Lemma</h2>
+<p><a title="Lemma Downloads" href="/resources/downloads/">Download</a> the Objective-C Lemma and example project.</p>
+<h2>3. Add Lemma Libraries to Project</h2>
+<p>Copy the <code>NoamLemma</code> directory into your Xcode project.</p>
+<h2>4. Install Socket Rocket &amp; CocoaAsyncSocket</h2>
+<p><a href="https://github.com/square/SocketRocket" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://github.com/square/SocketRocket', 'Socket Rocket']);" title="SocketRocket Github">Socket Rocket</a> is a conforming WebSocket (<a href="http://tools.ietf.org/html/rfc6455" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'http://tools.ietf.org/html/rfc6455', 'RFC 6455']);" title="RFC 6455">RFC 6455</a>) client library for Objective-C.</p>
+<p><a href="https://github.com/robbiehanson/CocoaAsyncSocket" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://github.com/robbiehanson/CocoaAsyncSocket', 'CocoaAsyncSocket']);" title="CocoaAsyncSocket">CocoaAsyncSocket</a> provides easy-to-use and powerful asynchronous socket libraries for OS X and iOS.</p>
+<p>You can also install these libraries using <a href="http://cocoapods.org/" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'http://cocoapods.org/', 'CocoaPods']);" title="CocoaPods">CocoaPods</a> by adding to your Podfile:</p>
+<pre><code>platform :ios, '6.0'
+pod 'CocoaAsyncSocket', '~&gt; 7.3.1'
+pod 'SocketRocket', '~&gt; 0.3.1-beta2'</code></pre>
+<h1>Using the Objective-C Lemma</h1>
+<h2>Dependencies</h2>
+<p>Include the Lemma library in your project.</p>
+<pre><code>#import "IDNoamLemma.h"
+</code></pre>
+<h2>Initialize and Run Lemma</h2>
+<p>The Noam lemma is initialized as a global singleton that can be easily accessed from any class. The Lemma will notify the delegate of connection success &amp; data receipt via the delegate methods. Follow these steps to create the Noam lemma and connect to the server:</p>
+<pre><code>IDNoamLemma *lemma = [IDNoamLemma sharedLemmaWithClientName:@"GuestName"
+                                                 serverName:@"Test Room"
+                                                 hearsArray:@[
+                                                 @"hearEventName1", @"hearEventName2"
+                                                 ]
+                                                 playsArray:@[@"speakEventName1", @"speakEventName2"]
+                                                   delegate:self];
+[lemma connect];
+</code></pre>
+<h2>Hear Messages</h2>
+<p>Hearing messages use the following notifications.</p>
+<pre><code>// Data received from a plays broadcast.
+extern NSString * const IDNoamLemmaDidReceiveDataNotification;      
+
+// id data from the event (NSString | NSArray | NSDictionary).
+extern NSString * const IDNoamLemmaDataKey;                         
+
+// Played event name (NSString).
+extern NSString * const IDNoamLemmaEventKey;                        
+</code></pre>
+<p>Other notifications related to hearing Noam messages are also supported.</p>
+<pre><code>// Connection error.
+extern NSString * const IDNoamLemmaConnectionFailedNotification;    
+
+// Returns the NSError for the connection failure.
+extern NSString * const IDNoamLemmaErrorKey;      
+
+// Connection closed.                  
+extern NSString * const IDNoamLemmaConnectionClosedNotification;    
+
+// NSString connection closed reason.
+extern NSString * const IDNoamLemmaConnectionClosedReasonKey;       
+
+// Lemma connected to Noam.
+extern NSString * const IDNoamLemmaDidConnectNotification;          
+
+// The lemma that played the event (NSString).
+extern NSString * const IDNoamLemmaFromLemmaKey;                    
+</code></pre>
+<h2>Speak Messages</h2>
+<pre><code>[[IDNoamLemma sharedLemma] sendData:@/*_JSON_SERIALIZABLE_DATA_*/ forEventName:@"speakEventName1"];
+</code></pre>
+<p><code>NSJSONSerialization</code> is used to encode data, which requires:</p>
+<ul>
+<li>The top level object is an <code>NSArray</code> or <code>NSDictionary</code>.</li>
+<li>All objects are instances of <code>NSString</code>, <code>NSNumber</code>, <code>NSArray</code>, <code>NSDictionary</code>, or <code>NSNull</code>.</li>
+<li>All dictionary keys are instances of <code>NSString</code>.</li>
+<li>Numbers are not <code>NaN</code> or infinity.</li>
+</ul>
+<p>See the example Xcode Project included in the <a title="Lemma Downloads" href="/resources/downloads/">download</a>.</p>
+<h1>Limitations</h1>
+<p>No known limitations or issues with this Lemma.</p>
+<h1>Developers</h1>
+<p>If you&#8217;re interested in checking out the source or contributing to this Lemma, visit our <a href="https://github.com/noam-io/lemma-objective-c" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://github.com/noam-io/lemma-objective-c', 'GitHub repository']);" title="Obj-C github repo">GitHub repository</a>.</p>
+			</div><!-- .entry-content -->
+</article><!-- #post-## -->
+
+		
+	
+
+			</div> <!-- close .*-inner (main-content or sidebar, depending if sidebar is used) -->
+		</div> <!-- close .row -->
+	</div> <!-- close .container -->
+</div> 

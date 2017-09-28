@@ -1,0 +1,138 @@
+---
+layout: default
+title: Processing
+---
+
+<div class="main-content gradientbg">
+	<div class="container equalize-heights-container">
+		<div class="row">
+			<!-- page.php -->
+		    
+	<!-- </div> --><!-- close .main-content-inner -->
+
+	{% include sidebar.html %} 
+  
+  <div id="content" class="main-content-inner col-xs-12 col-sm-9 main-column shadow-left documentation equalize-heights-column">
+		
+		<!-- content-page.php -->
+
+<article id="post-291" class="post-291 page type-page status-publish hentry">
+	<header class="page-header">
+		<h1 class="page-title">Processing</h1>
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<h1>What you need</h1>
+<h2>1. Processing</h2>
+<p>Processing is a java-based programming language and development environment for visual applications. <a href="https://processing.org/download/" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://processing.org/download/', 'Download Processing']);" title="Download Processing">Download Processing</a>.</p>
+<h2>2. The Processing Lemma</h2>
+<p><a href="/files/noam_processing_lemma.zip" title="Noam Lemma Processing Library">Download</a> the Lemma Library and example sketches.</p>
+<h2>3. Libraries added to the Processing IDE</h2>
+<p>Add the <code>lemma</code> folder to your Processing libraries directory; for Mac users this is located in <code>~/Documents/Processing/Libraries</code>. Restart Processing.</p>
+<h2>4. Review the Lemma Examples</h2>
+<p>You can find a few example sketches in Processing under  <code>File -&gt; Examples</code> then <code>Contributed Libraries -&gt; lemma</code></p>
+<h1>Using the Processing Lemma</h1>
+<h2>Dependencies</h2>
+<p>Import core Lemma, Event, and EventHandler libraries.</p>
+<pre><code>import lemma.library.Event;  
+import lemma.library.EventHandler;  
+import lemma.library.Lemma;
+</code></pre>
+<h2>Instantiate a Lemma</h2>
+<pre><code>Lemma lemma;
+</code></pre>
+<h2>Initialize a Lemma</h2>
+<p>Inside your setup function, initialize the lemma. <code>guestName</code> is the ID Noam Hosts will associate with your application. If <code>roomName</code> is left blank, the lemma is a Free Guest and may be grabbed by any Host via the <a href="/docs/host-interface" title="Host Interface">Host Interface</a>. Otherwise, it will only join a host with the specified <code>roomName</code>.</p>
+<pre><code>void setup(){
+  lemma = new Lemma(this, &lt;guestName&gt;, &lt;roomName&gt;);
+}
+</code></pre>
+<p>&#8216;Level.FINE&#8217; is an optional key that will add debug output to the Processing console.</p>
+<pre><code>lemma = new Lemma(this, &lt;guestName&gt;, &lt;roomName&gt;, Level.FINE);
+</code></pre>
+<h2>Hear Messages</h2>
+<p>Add one or more listeners inside your setup function.</p>
+<pre><code>lemma.hear(&lt;topicName&gt;, new &lt;MyEventHandler&gt;())
+</code></pre>
+<p>Extend the EventHandler interface defining a <code>callback(Event event)</code> method to handle callbacks for each listener.</p>
+<pre><code>class &lt;MyEventHandler&gt; implements EventHandler {
+  public void callback(Event event){
+    // handle event ... e.g. [Event.name / Event.stringValue / Event.intValue / Event.floatValue]
+    // see the lemma_runAllTypes example for details.
+  }
+}
+</code></pre>
+<h2>Run the Lemma</h2>
+<p>Within the draw loop, run the lemma.</p>
+<pre><code>void draw(){
+  lemma.run();
+}
+</code></pre>
+<h2>Speak Messages</h2>
+<p>From your application, speak a message. <code>topicName</code> is the Topic</p>
+<pre><code>lemma.sendEvent( &lt;topicName&gt;, &lt;messageValue&gt; );
+</code></pre>
+<h2>Examples</h2>
+<p>###Hearing messages<br />
+Instantiate, initialize, and run a lemma called &#8220;Processing Lemma&#8221; that joins room &#8220;Test Room&#8221;. Registers to hear messages on topic &#8220;Speed&#8221; and prints the value to the console.</p>
+<pre><code>import lemma.library.Event;
+import lemma.library.EventHandler;
+import lemma.library.Lemma;
+
+Lemma lemma; //instantiate the lemma
+
+void setup(){
+  lemma = new Lemma(this, "Processing Lemma", "Test Room"); //initialize lemma
+  lemma.hear("Speed", new SpeedHandler()); //register for messages on topic Speed
+}
+void draw(){
+  lemma.run(); //listen for new Noam messages.
+}
+
+class SpeedHandler implements EventHandler {
+  public void callback(Event event){
+      System.out.println("Caught event : " + event.name + " : " + event.doubleValue); //print message value
+  }
+}
+</code></pre>
+<h3>Speaking messages</h3>
+<p>Instantiate, initialize, and run a lemma called &#8220;Processing Lemma&#8221; that joins room &#8220;Test Room&#8221;. Registers to speak string messages on topic &#8220;messageString&#8221; and prints the value to the debugger.</p>
+<pre><code>import lemma.library.Event;
+import lemma.library.EventHandler;
+import lemma.library.Lemma;
+
+String messageString = "Hello";
+int lastSecond = second();
+Lemma lemma; //instantiate the lemma
+
+void setup(){
+  lemma = new Lemma(this, "Processing Lemma", "Test Room"); //initialize lemma
+}
+void draw(){
+  int currSecond = second();
+
+  // Send a message every second
+  if(lastSecond != currSecond){
+    lastSecond = currSecond;
+    if ( lemma.sendEvent("messageString", messageString) ){
+      //alternate sending "Hello" and "World"
+      messageString = (messageString == "Hello") ? "World" : "Hello";
+    }
+  }
+  lemma.run(); //listen for new Noam messages.
+}
+</code></pre>
+<h1>Limitations</h1>
+<p>• Passing maps and nested objects with Processing is not clean yet.  Improvements and tutorials coming soon.</p>
+<h1>Developers</h1>
+<p>If you&#8217;re interested in checking out the source or contributing to this Lemma, visit our <a href="https://github.com/noam-io/lemma-java" onclick="_gaq.push(['_trackEvent', 'outbound-article', 'https://github.com/noam-io/lemma-java', 'GitHub repository']);" title="java Lemma github repo">GitHub repository</a>.</p>
+			</div><!-- .entry-content -->
+	</article><!-- #post-## -->
+
+		
+	
+
+			</div> <!-- close .*-inner (main-content or sidebar, depending if sidebar is used) -->
+		</div> <!-- close .row -->
+	</div> <!-- close .container -->
+</div>
