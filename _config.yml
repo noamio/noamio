@@ -1,0 +1,3 @@
+name: Noam.io
+markdown: kramdown
+permalink: /blog/:year/:month/:day/:title
